@@ -1,3 +1,8 @@
+
+# Repo url
+
+<https://github.com/mbutler808/Project-1-solution>
+
 # Overview
 
 A sample solution for the Palmer Penguins project done with R/Quarto/Github. The structure promotes a data science pipeline for reproducibility in research. 
