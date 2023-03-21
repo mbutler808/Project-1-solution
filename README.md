@@ -7,7 +7,7 @@ A sample solution for the Palmer Penguins project done with R/Quarto/Github. The
 
 # History
 
-2023-02-16 First release with Data and Code folders with materials for data cleaning and initial exploration.
+2023-02-16 First release with Data and Code folders with materials for data cleaning and initial exploration.  
 2023-03-20 Example solutions added to the repository.
 
 # Acknowledgement

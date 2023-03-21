@@ -9,12 +9,12 @@ Elements:
 
 |Criteria| Evaluation| Scoring | Comments |
 |:---------|:-|:-|:-|
-|Right| Code runs without Error - Must be YES | 0/10 | |
+|__Right__| Code runs without Error - Must be YES | 0/10 | |
 |	  | Code produces correct output | 1-5 | |
-|Readable| Code is readable (good use of white space, etc.) |1-5| |
+|__Readable__| Code is readable (good use of white space, etc.) |1-5| |
 |        | Code is understandable (good naming conventions, concise informative comments) || |
-|Reproducible| READMEs document project organization | 1-5|
+|__Reproducible__| READMEs document project organization | 1-5|
 |        | READMEs list contents of each directory | | |
 |        | READMEs explain the order to run the code/quarto in order to reproduce analysis| | |
-|Aesthetics| Files are free of unnecessary clutter (assignment instructions, etc.) | 1-5 | |
+|__Aesthetics__| Files are free of unnecessary clutter (assignment instructions, etc.) | 1-5 | |
 |        | Code is elegant (not required, but a bonus) |  | |
