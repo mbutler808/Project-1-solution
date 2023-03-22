@@ -226,10 +226,10 @@ print(dictionary)
 processeddata <- d4      # clean data
 save_path <- "../../Data/Processed_data/"   # path where clean data is saved
 
-save_data_rds <- paste( save_path, "processeddata.rds", sep="")  # clean data RDS format
+save_data_rds <- paste( save_path, "penguins.rds", sep="")  # clean data RDS format
 saveRDS(processeddata, file = save_data_rds)
 
-save_data_csv <- paste( save_path, "processeddata.csv", sep="")  # clean data .csv
+save_data_csv <- paste( save_path, "penguins.csv", sep="")  # clean data .csv
 write.csv(processeddata, file = save_data_csv, row.names=FALSE)
 
 save_dictionary_csv <- paste( save_path, "dictionary.csv", sep="")  # clean data dictionary .csv
