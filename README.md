@@ -5,15 +5,16 @@
 
 # Overview
 
-A sample solution for the Palmer Penguins project done with R/Quarto/Github. The structure promotes a data science pipeline for reproducibility in research. 
+A sample solution for project 1 - data cleaning and initial exploration of the the Palmer Penguins data done with R/Quarto/Github.  
 
 ![Data science pipeline](https://github.com/mbutler808/rclass/blob/main/images/dspipeline.png)
-[Figure: The Data Science Pipeline from RD Peng](https://rdpeng.github.io/Biostat776/lecture-the-data-science-pipeline.html)
+[Figure: The Data Science Pipeline from RD Peng -- a data science pipeline that promotes reproducibility in research.](https://rdpeng.github.io/Biostat776/lecture-the-data-science-pipeline.html)
 
 # History
 
 2023-02-16 First release with Data and Code folders with materials for data cleaning and initial exploration.  
 2023-03-20 Example solutions added to the repository.
+2025-03-23 Made some edits to the readmes and updated the processing v1 quarto file. 
 
 # Acknowledgement
 
