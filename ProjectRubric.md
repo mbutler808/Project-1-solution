@@ -1,6 +1,6 @@
 # Project Rubric
 
-Your audience is the user, members of the R-literate general public who may want to use your data and/or code. To be useful, the code and documentation must be clear enough to guide naive users in fully reproducing the analysis. Naive users may not know anything about the project, or may even be yourself after enough time has passed or project multiplied! 
+Your audience is the user, members of the R-literate general public who may want to use your data and/or code. To be useful, the code and documentation must be clear enough to guide naive users in fully reproducing the analysis. Naive users may not know anything about the project, or may even be yourself after enough time has passed or projects multiplied! 
 
 Elements:
 1. Your github repo, organized following the project template.

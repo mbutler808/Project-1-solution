@@ -10,11 +10,11 @@ This directory contains `.R` or `.qmd` scripts in the folders as appropriate:
 
 ## Code Design:
 
-You can either have fewer large scripts, or multiple scripts that do only specific actions. Those can be R scripts or qmd files. In either case, document the scripts and what goes on in them so well that someone else (including future you) can easily figure out what is happening.
+The data cleaning in the `Processing_code` folder is done three ways: one R script, v1 qmd and v2 qmd files. The v1 qmd duplicates the R script but is formatted as a report. The v2 qmd sources code chunks from the .R script and includes only the text and formats the output, promoting less code maintenance. 
 
-The scripts should load the appropriate data (e.g. raw or processed), perform actions, and save results (e.g. processed data, figures, computed values) in the appropriate folders. 
+All of the methods load the appropriate data (e.g. raw or processed), perform actions, and save results (e.g. processed data, figures, computed values) in the appropriate folders. 
 
-Be sure to use **relative paths** so that each script works from the working directory set to the folder that the script is in. 
+**Relative paths** are used so that each script works from the working directory set to the folder that the script is in. 
 
 ## Code Documentation:
 

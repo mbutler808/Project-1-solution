@@ -79,10 +79,15 @@ skimr::skim(rawdata)
 See all the data by just typing `rawdata` at the R console.
 
 Note that the names in the penguin dataset have spaces and () which are usable, but force us to quote the character strings. You can either keep doing so rawdata$`Culmen Length (mm)` or rename to something more convenient.
-Personally I would probably shorten everything, but to keep it more recognizable for this exercise, I will leave it. Itʻs up to you. 
 
-```{r eval=F}
-# names(rawdata) <- c("study", "sampleN", "species", "region", "island", "stage", "id", ... )
+Personally I would probably shorten everything, but to keep it more recognizable for this exercise, I will do both - make a shorter `new_names` and save a vector `orig_names` which are convenient for plotting axis labels. Iʻll name the `orig_names` by the `new names` so I donʻt have to remember the original names! Itʻs up to you how you deal with this.  
+
+```{r}
+orig_names <- names(rawdata)
+new_names <- c("study", "sampleN", "species", "region", "island", "stage", "id", "clutch", "eggdate", "culmenL", "culmenD", "flipperL", "mass", "sex", "d15N", "d13C", "comments" )
+names(orig_names) <- new_names   # label the original names vector with the new names
+                              # useful for plot axis labels
+orig_names                          
 ```
 
 # Cleaning
@@ -102,65 +107,76 @@ Notice that some of the species names have typos? Letʻs save rawdata as d1, and
 
 ```{r}
 d1 <- rawdata
+names(d1) <- new_names   # rename the data with short names
 ```
 
 Use the techniques we learned in class to fix these errors. For example, we can find the mispelled entry, and replace the whole thing:
 
 ```{r}
-ii <- grep("PengTin", d1$Species)
-d1$Species[ii] <- "Adelie Penguin (Pygoscelis adeliae)"
+ii <- grep("PengTin", d1$species)
+d1$species[ii] <- "Adelie Penguin (Pygoscelis adeliae)"
 ```
 
 Another way:
 
 ```{r}
-d1$Species <- sub("gTin", "guin", d1$Species)
-unique(d1$Species)   # look at partially fixed data again  
+d1$species <- sub("gTin", "guin", d1$species)
+unique(d1$species)   # look at partially fixed data again  
 ```
 
-Fix all of the errors. 
+### Fix all of the typos in species name 
+
+```{r}
+d1$species <- sub("gufn", "guin", d1$species)
+d1$species <- sub("Oguin", "nguin", d1$species)
+d1$species <- sub("Kie", "lie", d1$species)
+d1$species <- sub("lieM", "lie ", d1$species)
+d1$species <- sub("Vent", "Gent", d1$species)
+unique(d1$species)     
+```
 
 Also, letʻs shorten Species just keeping the three common names "Adelie", "Gentoo", and "Chinstrap" and delete the rest of the Species character string. 
 
-NOTE: Check your work with each change.  Debug as you go, never all at once. Make sure that the code you save in your script works without error. 
+```{r}
+d1$species <- sub(" Penguin (Pygoscelis adeliae)","", d1$species, fixed=T)
+d1$species <- sub(" penguin (Pygoscelis papua)","", d1$species, fixed=T)
+d1$species <- sub(" penguin (Pygoscelis antarctica)","", d1$species, fixed=T)
 
+unique(d1$species)
+```
 
 ### Continuous data
 
 There is an entry for `Culmen Length (mm)` which says "missing" instead of a number or NA. 
-Should we delete this record (and all of the variables)?
-This "missing" entry also turned all culmen length entries into characters instead of numeric.
-That conversion to character also means that our summary function isn't very meaningful.
-
-So let's fix that first.
+Fix by changing culmen length entry to NA.
 
 ```{r}
-cl <- d1$`Culmen Length (mm)` # OK so typing `Culmen Length (mm)` is really annoying. 
+cl <- d1$culmenL # OK so typing long names is really annoying. 
                               # Letʻs make a temporary variable `cl` and save it 
                               # back to d1$`Culmen Length (mm)` when weʻre done. 
 
 cl[ cl == "missing" ] <- NA  # find cl=="missing and replace "missing" with NA
 cl <- as.numeric(cl)  # coerce to numeric
-d1$`Culmen Length (mm)` <- cl
+d1$culmenL <- cl
 ```
 
 Another way using `dplyr` from the tidyverse:
 
 ```{r eval=F}
-# d1 <- rawdata %>% dplyr::filter( `Culmen Length (mm)` != "missing" ) %>% 
-             dplyr::mutate( `Culmen Length (mm)` = as.numeric(`Culmen Length (mm)`))
+d1 <- rawdata %>% dplyr::filter( culmenL != "missing" ) %>% 
+             dplyr::mutate( culmenL = as.numeric(culmenL))
 ```
 
 Look at partially fixed data again
 
 ```{r}
 skimr::skim(d1)
-hist(d1$`Culmen Length (mm)`)
+hist(d1$culmenL)
 ```
 
 Letʻs also do a bivariate plot with mass
 ```{r}
-plot(d1$`Body Mass (g)`, d1$`Culmen Length (mm)`)
+plot(d1$mass, d1$culmenL)
 ```
 
 Notice anything funny? 
@@ -185,16 +201,16 @@ Now replace with the same divided by 10:
 ```{r}
 cl[ !is.na(cl) & cl>300 ] <- cl[ !is.na(cl) & cl>300 ]/10  
 
-d2$`Culmen Length (mm)` <- cl
+d2$culmenL <- cl
 ```
 
 Culmen length values seem ok now
 
 ```{r}
 skimr::skim(d2)
-hist(d2$`Culmen Length (mm)`)
+hist(d2$culmenL)
 
-plot(d2$`Body Mass (g)`, d2$`Culmen Length (mm)`)
+plot(d2$mass, d2$culmenL, xlab=orig_names["mass"], ylab=orig_names["culmenL"])
 ```
 
 Look better?
@@ -205,7 +221,7 @@ There are penguins with body mass of <100g when the others are over 3000.
 Perhaps these are new chicks? But they are supposed to be adults. Letʻs remove them.
 
 ```{r}
-hist(d2$`Body Mass (g)`)
+hist(d2$mass)
 ```
 
 Mass is the main size variable, so we will probably need to remove the individuals with missing masses in order to  be able to analyze the data. 
@@ -215,7 +231,7 @@ This should be adjusted based on your planned analysis approach.
 
 ```{r}
 d3 <- d2
-mm <- d3$`Body Mass (g)`
+mm <- d3$mass
 
 mm[ mm < 100 ] <- NA       # replace tiny masses with NA
 nas <- which( is.na(mm) )  # find which rows have NA for mass
@@ -223,9 +239,9 @@ nas <- which( is.na(mm) )  # find which rows have NA for mass
 d3 <- d3[ -nas, ]   # drop the penguins (rows) with missing masses
 
 skimr::skim(d3)
-hist(d3$`Body Mass (g)`)
+hist(d3$mass)
 
-plot(d3$`Body Mass (g)`, d3$`Culmen Length (mm)`)
+plot(d3$mass, d3$culmenL, xlab=orig_names["mass"], ylab=orig_names["culmenL"])
 ```
 
 Does it look better?
@@ -235,9 +251,9 @@ Does it look better?
 We also want to have Species, Sex, and Island coded as a categorical/factor variable:
 
 ```{r}
-d3$Species <- as.factor(d3$Species)
-d3$Sex <- as.factor(d3$Sex)
-d3$Island <- as.factor(d3$Island)  
+d3$species <- as.factor(d3$species)
+d3$sex <- as.factor(d3$sex)
+d3$island <- as.factor(d3$island)  
 skimr::skim(d3)
 ```
 
@@ -245,22 +261,78 @@ skimr::skim(d3)
 
 Make bivariate plots for any remaining continous data to ensure there are no further errors. It is a good check on the distribution of the data as well. 
 
+```{r}
+# bivariate plots of each numeric variable with mass to ensure there are no further
+# errors.:
+names(d3) <- new_names
+plot(d3$mass, d3$culmenL, xlab=orig_names["mass"], ylab=orig_names["culmenL"])
+plot(d3$mass, d3$culmenD, xlab=orig_names["mass"], ylab=orig_names["culmenD"])
+plot(d3$mass, d3$flipperL, xlab=orig_names["mass"], ylab=orig_names["flipperL"])
+plot(d3$mass, d3$d15N, xlab=orig_names["mass"], ylab=orig_names["d15N"])
+plot(d3$mass, d3$d13C, xlab=orig_names["mass"], ylab=orig_names["d13C"])
+```
+
 Make histograms or densities of at least mass by discrete category, to check for any potential category errors, extra categories, etc.  
 
 You should look through all of the data, variable by variable, or by pairs of variables.
 
+```{r}
+# We will not subset by region, stage as they have only 1 value
+# nor eggdate and sampleN which have many values
+
+require(ggplot2)
+hist(d3$mass)   # a single histogram of mass
+
+d3 %>%   # mass histogram by species
+    ggplot( aes(x=mass)) + 
+   geom_histogram( aes(fill=species), alpha=.5) 
+ 
+d3 %>%    # mass density by species
+    ggplot( aes(x=mass)) + 
+   geom_density( aes(fill=species), alpha=.5) 
+ 
+d3 %>%    # by island
+    ggplot( aes(x=mass)) + 
+    geom_histogram( aes(fill=island), alpha=.5)   
+
+d3 %>% 
+    ggplot( aes(x=mass)) + 
+    geom_density( aes(fill=island), alpha=.5)   
+
+d3 %>% 
+    ggplot( aes(x=mass)) + 
+    geom_histogram( aes(fill=clutch), alpha=.5)   
+
+d3 %>% 
+    ggplot( aes(x=mass)) + 
+    geom_density( aes(fill=clutch), alpha=.5)   
+
+d3 %>% 
+    ggplot( aes(x=mass)) + 
+    geom_histogram( aes(fill=sex), alpha=.5)   
+
+d3 %>% 
+    ggplot( aes(x=mass)) + 
+    geom_density( aes(fill=sex), alpha=.5)   
+```
 
 # Finalize your cleaned dataset. 
 
-Drop any variables (columns) that you wonʻt analyze.  If you have extra levels after dropping some values, you may want to relevel your factors (this may or may not happen). 
+Drop variables (columns) we wonʻt analyze.  
 
-To specify new levels or orders of levels:
+```{r}
+vars <- c("id", "species", "island", "clutch", "eggdate", "culmenL", "culmenD", "flipperL", "mass", "sex", "d15N", "d13C")
 
-```{r eval=F}
-# new_factor <- factor(vec_extra_levels, levels=c("level1", "level2", ... ))
+d4 <- d3[vars]   # save only the variables in vars
+names(d4) <- orig_names[vars]  # revert to original names
+print(orig_names[vars])
 
-# to drop empty levels:
-# new_factor <- droplevels(vec_extra_levels)
+dictionary <- dictionary[dictionary$variable %in% orig_names[vars],]  # drop unused variables
+
+# another way to drop unused rows: 
+dictionary <- dictionary %>% filter( variable %in% orig_names[vars] )  # dplyr
+
+print(dictionary)
 ```
 
 # Save data
@@ -270,13 +342,10 @@ Let's assign at the end to some final variable
 makes it easier to add steps above
 
 ```{r}
-processeddata <- d3      # change if you did more steps
+processeddata <- d4      # cleaned data
 ```
 
-Finally, we save the clean data as RDS file. I suggest you save your processed and cleaned data as RDS or RDA/Rdata files, as well as a copy as .csv
-
-RDS/Rdata preserves coding like factors, characters, numeric, etc.  If you save as CSV, that information would get lost.
-However, CSV is better for sharing with others since it's plain text. If you do CSV, you might want to write down somewhere what each variable is (i.e. a data dictionary).
+Finally, save the clean data as RDS file as well as a copy as .csv
 
 Location to save file:
 
@@ -285,23 +354,11 @@ save_data_location <- "../../Data/Processed_data/processeddata.rds"
 saveRDS(processeddata, file = save_data_location)
 
 save_data_location_csv <- "../../Data/Processed_data/processeddata.csv"
-write.csv(processeddata, file = save_data_location_csv, row.names=FALSE)
+```
+
+I will use the version 2 quarto file, so I will comment it out here:
+```{r}
+## write.csv(processeddata, file = save_data_location_csv, row.names=FALSE)
 ```
 
 
-# Notes 
-
--  Anything you don't want loaded into the Quarto file but 
-keep in the R file, just give it its own label and then just leave that label out of the Quarto file. For example, you may try excluding some of the excessive comments. 
-
--  Dealing with NA or "bad" data:
-Removing anyone who had "faulty" or missing data is one approach, but it's often not the best. Based on your question and your analysis approach, you might want to do cleaning differently (e.g. keep individuals with some missing information)
-
--  Saving data as RDS:
-I suggest you save your processed and cleaned data as RDS or RDA/Rdata files.  This preserves coding like factors, characters, numeric, etc.  If you save as CSV, that information would get lost.
-However, CSV is better for sharing with others since it's plain text. 
-
--  If you do CSV, you must to write down somewhere what each variable is (i.e. in a data dictionary).
-
--  See here for some suggestions on how to store your processed data:
-<http://www.sthda.com/english/wiki/saving-data-into-r-data-format-rds-and-rdata>

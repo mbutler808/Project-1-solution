@@ -1,6 +1,6 @@
 # README.md
 
-This folder contains the raw data for this project. We begin with the data provided with the Palmerpenguins R package, which you can install in R using `install.packages("palmerpenguins")`
+This folder contains the raw data for this project. The data included here is based on the data provided with the Palmerpenguins R package (FYI: the source data can be installed in R using `install.packages("palmerpenguins")`
 
 This dataset contains 17 columns, 16 data columns and one comment field, as explained in `datadictionary.csv` or the table below. 
 
